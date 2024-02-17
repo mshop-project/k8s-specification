@@ -1,0 +1,152 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mshopgateway-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mshopgateway
+  template:
+    metadata:
+      labels:
+        app: mshopgateway
+    spec:
+      containers:
+        - name: mshopgateway
+          image: ktosi/mshopgatewayapi:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              cpu: 400m
+            requests:
+              cpu: 200m
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mshoporders-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mshoporders
+  template:
+    metadata:
+      labels:
+        app: mshoporders
+    spec:
+      containers:
+        - name: mshoporders
+          image: ktosi/mshopordersapi:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              cpu: 200m
+            requests:
+              cpu: 200m
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mshopproducts-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mshopproducts
+  template:
+    metadata:
+      labels:
+        app: mshopproducts
+    spec:
+      containers:
+        - name: mshopproducts
+          image: ktosi/mshopproductsapi:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: 400m
+            requests:
+              memory: "512Mi"
+              cpu: 200m
+
+---
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: mshopproducts-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: mshopproducts
+  minReplicas: 2
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 60
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mshopdiscounts-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mshopdiscounts
+  template:
+    metadata:
+      labels:
+        app: mshopdiscounts
+    spec:
+      containers:
+        - name: mshopdiscounts
+          image: ktosi/mshopdiscountsapi:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              cpu: 300m
+            requests:
+              cpu: 200m
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mshopclient-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mshopclient
+  template:
+    metadata:
+      labels:
+        app: mshopclient
+    spec:
+      containers:
+        - name: mshopclient
+          image: ktosi/mshopclient:nginx-3.2
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+              cpu: 400m
+            requests:
+              cpu: 300m

@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mshopgateway-svc
+spec:
+  selector:
+    app: mshopgateway
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8080
+  type: ClusterIP 
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mshoporders-svc
+spec:
+  selector:
+    app: mshoporders
+  ports:
+    - protocol: TCP
+      port: 8082
+      targetPort: 8080
+  type: ClusterIP 
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mshopproducts-svc
+spec:
+  selector:
+    app: mshopproducts
+  ports:
+    - protocol: TCP
+      port: 8083
+      targetPort: 8080
+  type: ClusterIP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mshopdiscounts-svc
+spec:
+  selector:
+    app: mshopdiscounts
+  ports:
+    - protocol: TCP
+      port: 8084
+      targetPort: 8080
+  type: ClusterIP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mshopclient-svc
+spec:
+  selector:
+    app: mshopclient
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
